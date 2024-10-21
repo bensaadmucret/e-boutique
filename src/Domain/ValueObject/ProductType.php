@@ -11,7 +11,7 @@ readonly class ProductType
     public function __construct(string $type)
     {
         if (!in_array($type, self::VALID_TYPES)) {
-            throw new \InvalidArgumentException("Invalid product type.");
+            throw new \InvalidArgumentException("Invalid products type.");
         }
 
         $this->type = $type;

@@ -12,7 +12,7 @@ readonly class Money
         private float $amount,
 
         #[ORM\Column(type: 'string', length: 3)]
-        private Currency $currency,
+        private string $currency,
     ) {
         if ($amount < 0) {
             throw new \InvalidArgumentException("Amount cannot be negative.");
@@ -49,6 +49,6 @@ readonly class Money
 
     public function __toString(): string
     {
-        return $this->currency->symbol() . number_format($this->amount, 2);
+        return $this->currency . number_format($this->amount, 2);
     }
 }

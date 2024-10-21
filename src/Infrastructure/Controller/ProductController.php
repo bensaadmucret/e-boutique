@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ProductController extends AbstractController
+final class ProductController extends AbstractController
 {
     public function __construct(
         private readonly ProductRepositoryInterface $productRepository,
@@ -19,12 +19,12 @@ class ProductController extends AbstractController
     {
         $products = $this->productRepository->findAllProducts();
 
-        return $this->render('product/products.html.twig', [
+        return $this->render('products/products.html.twig', [
             'products' => $products,
         ]);
     }
 
-    #[Route('/product/{id}', name: 'product_detail', methods: ['GET'])]
+    #[Route('/products/{id}', name: 'product_detail', methods: ['GET'])]
     public function detail(int $id): Response
     {
         $product = $this->productRepository->findById($id);
@@ -33,8 +33,8 @@ class ProductController extends AbstractController
             throw $this->createNotFoundException('Produit non trouvé');
         }
 
-        return $this->render('product/product_detail.html.twig', [
-            'product' => $product,
+        return $this->render('products/product_detail.html.twig', [
+            'products' => $product,
         ]);
     }
 }

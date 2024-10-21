@@ -1,18 +1,56 @@
+version: '3.8'
 
 services:
-###> doctrine/doctrine-bundle ###
   database:
+    image: postgres:16-alpine
     ports:
-      - "5432"
-###< doctrine/doctrine-bundle ###
+      - "5432:5432"
 
-###> symfony/mailer ###
   mailer:
     image: axllent/mailpit
     ports:
-      - "1025"
-      - "8025"
+      - "1025:1025"
+      - "8025:8025"
     environment:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
-###< symfony/mailer ###
+
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  elasticsearch:
+    image: elasticsearch:7.10.1
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+
+  selenium:
+    image: selenium/standalone-chrome
+    ports:
+      - "4444:4444"

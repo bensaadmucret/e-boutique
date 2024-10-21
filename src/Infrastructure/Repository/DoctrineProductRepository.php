@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Infrastructure\Persistence\Repository;
+namespace App\Infrastructure\Repository;
 
+use App\Domain\Entity\Product;
 use App\Domain\Repository\ProductRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use App\Domain\Entity\Product;
 
 class DoctrineProductRepository extends ServiceEntityRepository implements ProductRepositoryInterface
 {
