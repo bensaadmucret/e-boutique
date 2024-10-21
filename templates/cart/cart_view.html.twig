@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Panier{% endblock %}
+
+{% block body %}
+    <h1>Mon Panier</h1>
+
+    {% if cart.items is empty %}
+        <p>Votre panier est vide.</p>
+    {% else %}
+        <table>
+            <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Prix unitaire</th>
+                <th>Prix total</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in cart.items %}
+                <tr>
+                    <td>{{ item.productId }}</td> {# Remplacez ceci par le nom du produit si disponible #}
+                    <td>{{ item.quantity.value }}</td> {# Supposons que la méthode getValue() existe pour obtenir la quantité #}
+                    <td>{{ item.price.amount }} {{ item.price.currency }}</td>
+                    <td>{{ item.price.amount * item.quantity.value }} {{ item.price.currency }}</td>
+                    <td>
+                        <a href="{{ path('cart_remove', { 'productId': item.productId, 'productType': item.productType.type }) }}">Retirer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Total: {{ cart.total.amount }} {{ cart.total.currency }}</h2>
+    {% endif %}
+
+    <a href="{{ path('cart_add') }}">Ajouter un produit</a> {# Lien pour ajouter un produit #}
+{% endblock %}

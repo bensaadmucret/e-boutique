@@ -6,7 +6,7 @@ use App\Domain\ValueObject\Money;
 use App\Domain\ValueObject\ProductType;
 use App\Domain\ValueObject\Quantity;
 
-class CartItem
+final class CartItem
 {
     public function __construct(
     private readonly ProductType $productType,
