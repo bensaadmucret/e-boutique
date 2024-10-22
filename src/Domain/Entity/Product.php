@@ -26,11 +26,14 @@ class Product
     public function __construct(
         string $name,
         Money $price,
+        string $type,
         ?string $description = null
+
     ) {
         $this->name = $name;
         $this->price = $price;
         $this->description = $description;
+        $this->type = $type;
     }
 
     public function getId(): int
@@ -53,6 +56,16 @@ class Product
         return $this->price;
     }
 
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): void
+    {
+        $this->type = $type;
+    }
+
     public function setName(string $name): void
     {
         $this->name = $name;
@@ -66,5 +79,10 @@ class Product
     public function setPrice(Money $price): void
     {
         $this->price = $price;
+    }
+
+    public function __toString(): string
+    {
+        return $this->value;
     }
 }

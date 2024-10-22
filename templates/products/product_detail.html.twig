@@ -5,13 +5,14 @@
 {% block body %}
     <h1>{{ product.name }}</h1>
 
-    <img src="{{ product.imageUrl }}" alt="{{ product.name }}">
-    <p>Prix: {{ product.price|number_format(2) }} {{ product.price.currency }}</p>
+   {# <img src="{{ product.imageUrl }}" alt="{{ product.name }}"> #}
+    <p>Prix: {{ product.price.amount|number_format(2) }} {{ product.price.currency.symbol }}</p>
     <p>{{ product.description }}</p>
 
     <form action="{{ path('cart_add') }}" method="POST">
         <input type="hidden" name="productId" value="{{ product.id }}">
-        <input type="hidden" name="productType" value="{{ product.type }}">
+        <input type="hidden" name="productType" value="{{ product.name }}">
+        <input type="hidden" name="price" value="{{ product.price.amount|number_format(2) }}">
         <input type="number" name="quantity" value="1" min="1" max="10" required>
         <button type="submit">Ajouter au Panier</button>
     </form>

@@ -3,15 +3,16 @@
 namespace App\Domain\ValueObject;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Domain\Enum\Currency;
 
 #[ORM\Embeddable]
 readonly class Money
 {
     public function __construct(
         #[ORM\Column(type: 'float')]
-        private float $amount,
+        private float    $amount,
 
-        #[ORM\Column(type: 'currency', length: 3)]
+        #[ORM\Column(type: 'string', length: 3, enumType: Currency::class)]
         private Currency $currency,
     ) {
         if ($amount < 0) {

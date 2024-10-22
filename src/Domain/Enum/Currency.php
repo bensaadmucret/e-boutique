@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\ValueObject;
+namespace App\Domain\Enum;
 
 enum Currency: string
 {
@@ -8,6 +8,11 @@ enum Currency: string
     case EUR = 'EUR';
     case GBP = 'GBP';
     case JPY = 'JPY';
+
+    public function code(): string
+    {
+        return $this->value;
+    }
 
     public function symbol(): string
     {
@@ -18,4 +23,5 @@ enum Currency: string
             self::JPY => '¥',
         };
     }
+
 }

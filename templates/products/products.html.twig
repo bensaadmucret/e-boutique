@@ -9,8 +9,9 @@
         {% for product in products %}
             <div class="product-card">
                 <h2>{{ product.name }}</h2>
-                <img src="{{ product.imageUrl }}" alt="{{ product.name }}">
-                <p>Prix: {{ product.price|number_format(2) }} {{ product.price.currency }}</p>
+                {# <img src="{{ product.imageUrl }}" alt="{{ product.name }}"> #}
+                <p>Prix: {{ product.price.amount|number_format(2) }} {{ product.price.currency.symbol }}</p>
+
                 <a href="{{ path('product_detail', { 'id': product.id }) }}">Voir Détails</a>
             </div>
         {% endfor %}

@@ -26,6 +26,7 @@ final class CartController extends AbstractController
     public function addItem(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
+
         $productId = $data['productId'] ?? null;
         $productType = $data['productType'] ?? null;
         $quantityValue = $data['quantity'] ?? 1;
