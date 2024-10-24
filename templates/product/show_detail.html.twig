@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du Produit: {{ product.name }}{% endblock %}
+
+{% block body %}
+    <h1>{{ product.name }}</h1>
+
+    <p>Prix: {{ product.price.amount|number_format(2) }} {{ product.price.currency.symbol }}</p>
+
+    <p>{{ product.description }}</p>
+
+    <form action="{{ path('cart_add') }}" method="POST">
+        <input type="hidden" name="_csrf_token"  value="{{ csrf_token('cart_add') }}">
+        <input type="hidden" name="productId" value="{{ product.id }}">
+        <input type="hidden" name="price" value="{{ product.price.amount|number_format(2) }}">
+        <input type="hidden" name="currency" value="{{ product.price.currency.code }}">
+        <input type="number" name="quantity" value="1" min="1" max="10" required>
+        <button type="submit">Ajouter au Panier</button>
+    </form>
+
+    <a href="{{ path('list') }}">Retour à la Liste des Produits</a>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let formData = new FormData(this);
+            let jsonData = {};
+
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            fetch('{{ path('cart_add') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(jsonData), // Envoi des données JSON
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        });
+    </script>
+{% endblock %}

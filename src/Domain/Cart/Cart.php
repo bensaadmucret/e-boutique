@@ -6,6 +6,7 @@ namespace App\Domain\Cart;
 
 use App\Domain\Enum\Currency;
 use App\Domain\ValueObject\Money;
+use App\Domain\ValueObject\Quantity;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -69,7 +70,13 @@ final class Cart
     {
         $serializedItems = $this->getSession()->get('cart', '');
         if (!empty($serializedItems)) {
-            $this->items = unserialize($serializedItems, ['allowed_classes' => [CartItem::class]]) ?: [];
+            $this->items = unserialize($serializedItems, [
+                'allowed_classes' => [
+                    CartItem::class,
+                    Quantity::class,
+                    Money::class,
+                    Currency::class]
+            ]) ?: [];
         }
     }
 

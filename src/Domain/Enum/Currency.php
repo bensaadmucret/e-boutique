@@ -9,6 +9,7 @@ enum Currency: string
     case GBP = 'GBP';
     case JPY = 'JPY';
 
+
     public function code(): string
     {
         return $this->value;

@@ -3,23 +3,17 @@
 namespace App\Domain\Cart;
 
 use App\Domain\ValueObject\Money;
-use App\Domain\ValueObject\ProductType;
 use App\Domain\ValueObject\Quantity;
 
 final class CartItem
 {
     public function __construct(
-    private readonly ProductType $productType,
     private readonly int         $productId,
     private Quantity             $quantity,
     private readonly Money       $price,
+    private readonly string     $currency,
     )
     {
-    }
-
-    public function getProductType(): ProductType
-    {
-        return $this->productType;
     }
 
     public function getProductId(): int
@@ -49,7 +43,7 @@ final class CartItem
 
     public function isEqualTo(CartItem $other): bool
     {
-        return $this->productId === $other->productId && $this->productType === $other->productType;
+        return $this->productId === $other->productId;
     }
 
 }

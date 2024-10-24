@@ -16,17 +16,17 @@ final class ProductController extends AbstractController
     ) {
     }
 
-    #[Route('/products', name: 'products', methods: ['GET'])]
+    #[Route('/product', name: 'list', methods: ['GET'])]
     public function index(): Response
     {
         $products = $this->productRepository->findAllProducts();
 
-        return $this->render('products/products.html.twig', [
+        return $this->render('product/list.html.twig', [
             'products' => $products,
         ]);
     }
 
-    #[Route('/products/{id}', name: 'product_detail', methods: ['GET'])]
+    #[Route('/product/{id}', name: 'show_detail', methods: ['GET'])]
     public function detail(int $id): Response
     {
         $product = $this->productRepository->findById($id);
@@ -35,7 +35,7 @@ final class ProductController extends AbstractController
             throw $this->createNotFoundException('Produit non trouvé');
         }
 
-        return $this->render('products/product_detail.html.twig', [
+        return $this->render('product/show_detail.html.twig', [
             'product' => $product,
         ]);
     }

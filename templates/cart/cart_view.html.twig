@@ -23,17 +23,17 @@
                 <tr>
                     <td>{{ item.productId }}</td> {# Remplacez ceci par le nom du produit si disponible #}
                     <td>{{ item.quantity.value }}</td> {# Supposons que la méthode getValue() existe pour obtenir la quantité #}
-                    <td>{{ item.price.amount }} {{ item.price.currency }}</td>
-                    <td>{{ item.price.amount * item.quantity.value }} {{ item.price.currency }}</td>
+                    <td>{{ item.price.amount }} {{ item.price.currency.code }}</td>
+                    <td>{{ item.price.amount * item.quantity.value }} {{ item.price.currency.code }}</td>
                     <td>
-                        <a href="{{ path('cart_remove', { 'productId': item.productId, 'productType': item.productType.type }) }}">Retirer</a>
+                        <a href="{{ path('cart_remove', { 'productId': item.productId }) }}">Retirer</a>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
 
-        <h2>Total: {{ cart.total.amount }} {{ cart.total.currency }}</h2>
+        <h2>Total: {{ cart.total.amount }} {{ cart.total.currency.code }}</h2>
     {% endif %}
 
     <a href="{{ path('cart_add') }}">Ajouter un produit</a> {# Lien pour ajouter un produit #}

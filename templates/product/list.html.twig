@@ -4,7 +4,6 @@
 
 {% block body %}
     <h1>Liste des Produits</h1>
-
     <div class="product-list">
         {% for product in products %}
             <div class="product-card">
@@ -12,8 +11,9 @@
                 {# <img src="{{ product.imageUrl }}" alt="{{ product.name }}"> #}
                 <p>Prix: {{ product.price.amount|number_format(2) }} {{ product.price.currency.symbol }}</p>
 
-                <a href="{{ path('product_detail', { 'id': product.id }) }}">Voir Détails</a>
+                <a href="{{ path('show_detail', { 'id': product.id }) }}">Voir Détails</a>
             </div>
         {% endfor %}
+        {{ app.session.get('')  }}
     </div>
 {% endblock %}

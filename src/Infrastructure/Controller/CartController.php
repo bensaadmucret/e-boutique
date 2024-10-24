@@ -4,9 +4,8 @@ namespace App\Infrastructure\Controller;
 
 use App\Domain\Cart\Cart;
 use App\Domain\Cart\CartItem;
-use App\Domain\ValueObject\Money;
-use App\Domain\ValueObject\ProductType;
-use App\Domain\ValueObject\Quantity;
+use App\Domain\Enum\Currency;
+use App\Infrastructure\Service\CartService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,39 +14,37 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class CartController extends AbstractController
 {
-    private Cart $cart;
 
-    public function __construct(Cart $cart)
-    {
-        $this->cart = $cart;
-    }
+    public function __construct(
+        private readonly Cart $cart,
+        private readonly CartService $cartService,
+    ) {}
 
     #[Route('/cart/add', name: 'cart_add', methods: ['POST'])]
     public function addItem(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $jsonContent = $request->getContent();
+        $data = json_decode($jsonContent, true);
+        $token = $data['_csrf_token'] ?? null;
 
-        $productId = $data['productId'] ?? null;
-        $productType = $data['productType'] ?? null;
-        $quantityValue = $data['quantity'] ?? 1;
-        $priceValue = $data['price'] ?? 0.0;
-        $currency = $data['currency'] ?? 'USD';
-
-        if (!$productId || !$productType) {
-            return new JsonResponse(['error' => 'Invalid input'], Response::HTTP_BAD_REQUEST);
+        if (!$this->isCsrfTokenValid('cart_add', $token)) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], JsonResponse::HTTP_FORBIDDEN);
         }
 
         try {
-            $productTypeObject = new ProductType($productType);
-            $quantity = new Quantity($quantityValue);
-            $price = new Money($priceValue, $currency);
-            $cartItem = new CartItem($productTypeObject, $productId, $quantity, $price);
-            $this->cart->addItem($cartItem);
+            $data = $this->cartService->validateJsonContent($request->getContent());
+            $currency = Currency::from($data['currency'] ?? 'EUR');
+            return $this->cartService->addItem(
+                $data['productId'],
+                $data['price'] ?? 0.0,
+                $currency->code(),
+                $data['quantity'] ?? 1,
 
-            return new JsonResponse(['message' => 'Item added to cart successfully'], Response::HTTP_OK);
+            );
         } catch (\Exception $e) {
-            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => $e->getMessage()], JsonResponse::HTTP_BAD_REQUEST);
         }
+
     }
 
     #[Route('/cart/remove', name: 'cart_remove', methods: ['DELETE'])]
@@ -55,14 +52,13 @@ final class CartController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
         $productId = $data['productId'] ?? null;
-        $productType = $data['productType'] ?? null;
 
-        if (!$productId || !$productType) {
+        if (!$productId) {
             return new JsonResponse(['error' => 'Invalid input'], Response::HTTP_BAD_REQUEST);
         }
 
         // Logique pour trouver et retirer l'élément du panier
-        $cartItemToRemove = $this->findCartItem($productId, $productType);
+        $cartItemToRemove = $this->findCartItem($productId);
 
         if ($cartItemToRemove) {
             $this->cart->removeItem($cartItemToRemove);
@@ -85,10 +81,10 @@ final class CartController extends AbstractController
         ]);
     }
 
-    private function findCartItem(int $productId, string $productType): ?CartItem
+    private function findCartItem(int $productId): ?CartItem
     {
         foreach ($this->cart->getItems() as $item) {
-            if ($item->getProductId() === $productId && $item->getProductType()->getType() === $productType) {
+            if ($item->getProductId() === $productId) {
                 return $item;
             }
         }
